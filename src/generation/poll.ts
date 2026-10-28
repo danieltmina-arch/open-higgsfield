@@ -71,7 +71,9 @@ async function round(): Promise<void> {
   timer = null;
   polling = true;
   try {
-    const results = await getGenerationStatuses({ requestIds: [...waiting.keys()] });
+    const answer = await getGenerationStatuses({ requestIds: [...waiting.keys()] });
+    if (!answer.ok) throw new Error(answer.error);
+    const results = answer.value;
     misses = 0;
     for (const result of results) deliver(result);
     sweep();

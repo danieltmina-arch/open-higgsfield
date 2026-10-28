@@ -33,7 +33,8 @@ export function KeyModal({
     setBusy(true);
     setError(null);
     try {
-      await savePlatformCredentials({ api_key: apiKey });
+      const saved = await savePlatformCredentials({ api_key: apiKey });
+      if (!saved.ok) throw new Error(saved.error);
       onSaved();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not save the key");
@@ -46,7 +47,8 @@ export function KeyModal({
     setBusy(true);
     setError(null);
     try {
-      await clearPlatformCredentials();
+      const cleared = await clearPlatformCredentials();
+      if (!cleared.ok) throw new Error(cleared.error);
       setApiKey("");
       onCleared();
     } catch (caught) {

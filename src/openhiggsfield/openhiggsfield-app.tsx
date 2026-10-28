@@ -154,7 +154,7 @@ function describeError(caught: unknown): string {
   if (caught instanceof MissingCredentialsError || message.includes("Missing platform key")) {
     return "Add your platform key to generate.";
   }
-  return `Generation failed — ${message}. Try again; if it repeats, check the key in the sidebar.`;
+  return `Generation failed — ${message.replace(/\.+$/, "")}. Try again; if it repeats, check the key in the sidebar.`;
 }
 
 export function OpenHiggsfieldApp({ fontClassName = "" }: { fontClassName?: string }) {
@@ -379,7 +379,9 @@ export function OpenHiggsfieldApp({ fontClassName = "" }: { fontClassName?: stri
 
     const runOne = async (slot: { skeletons: string[] }) => {
       try {
-        const queued = await submitGeneration(plane);
+        const submitted = await submitGeneration(plane);
+        if (!submitted.ok) throw new Error(submitted.error);
+        const queued = submitted.value;
         setHistory((prev) => {
           const next = [...runningRows(queued.requestId, slot.skeletons.length, draft), ...prev];
           void saveHistory(next);

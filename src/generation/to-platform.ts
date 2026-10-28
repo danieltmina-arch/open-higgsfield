@@ -186,6 +186,12 @@ function mapSeedance(plane: GenerationPlane, prefix: string): Mapped {
 
 function mapSeedanceSource(plane: GenerationPlane, path: string, withDuration: boolean): Mapped {
   const [video, ...extraVideos] = urls(plane, "video");
+  if (!video) {
+    const label = withDuration ? "Seedance 2.5 Extend" : "Seedance 2.5 Edit";
+    throw new Error(
+      `${label} needs a source video. Attach a video, or pick plain Seedance 2.5 for text-to-video.`,
+    );
+  }
   const refs = urls(plane, "reference");
   const audios = urls(plane, "audio");
   return {
